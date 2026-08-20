@@ -1,28 +1,41 @@
-# BiasTrace — Project Page
+# Varsha Ramineni — Projects
 
-A single-file GitHub Pages site for the BiasTrace paper.
+Personal GitHub Pages site for showcasing my projects and research.
 
-## Deploy in 3 steps
+🌐 **Website:** https://varsharamineni.github.io/
 
-1. Create a new repo (e.g. `biastrace-page`) or use an existing one — for a **project page** the URL will be `https://<username>.github.io/<repo>/`. For your **user page**, name the repo `<username>.github.io` and the URL is `https://<username>.github.io/`.
-2. Drop `index.html` in the repo root and push.
-3. In the repo's **Settings → Pages**, set the source to `main` (root). It'll be live in a minute or two.
+## How it works
 
-## Before you publish
+The site automatically fetches my public GitHub repositories using the GitHub API and displays them as project cards.
 
-- Replace `href="#"` on the "Read the paper" and top-strip "Paper" links with your arXiv or preprint URL (there's a `TODO` comment in the file).
-- The GitHub link, author list, affiliations, and contact are pulled from the paper — double-check they're right.
-- Fonts are loaded from Google Fonts (Fraunces, Source Serif 4, JetBrains Mono). No build step needed.
+Each project includes links to:
 
-## Editing
+* The project's GitHub repository
+* Its corresponding GitHub Pages site
+  
+## Adding a new project
 
-Everything is one file — HTML, CSS, and content. The colour tokens live in `:root` at the top of the `<style>` block, so palette changes are a one-liner. The six annotation wash colours map to the BiasTrace behaviours and are reused in the legend, trace, and callout — change one, and it updates everywhere.
+There is no need to manually update the homepage.
 
-## What's on the page
+To add a project:
 
-- Header with title, authors, affiliations, and links
-- Six-part narrative walkthrough: the gap → scheme → annotated trace → key finding → applications → takeaway
-- One signature element: a real reasoning trace from Figure 1 of the paper, annotated inline with the BiasTrace scheme
-- Minimal footer
+1. Create a public repository under [`varsharamineni`](https://github.com/varsharamineni).
+2. Add a useful repository description.
+3. If the project has a GitHub Pages site, enable GitHub Pages for the repository.
+4. The project will automatically appear on the portfolio homepage.
 
-Designed to fit within \~6–8 screens of scroll on desktop.
+The homepage sorts repositories by their most recently updated date.
+
+## Built with
+
+* HTML
+* CSS
+* JavaScript
+* GitHub API
+* GitHub Pages
+
+## Repository
+
+This repository contains the source for my personal project homepage:
+
+[github.com/varsharamineni/varsharamineni.github.io](https://github.com/varsharamineni/varsharamineni.github.io)
