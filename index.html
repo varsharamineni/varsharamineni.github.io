@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -13,8 +14,14 @@
 
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-                   Roboto, Helvetica, Arial, sans-serif;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
       background: #fafafa;
       color: #222;
     }
@@ -32,6 +39,7 @@
     h1 {
       font-size: 2.5rem;
       margin: 0 0 10px;
+      letter-spacing: -0.03em;
     }
 
     .subtitle {
@@ -66,6 +74,7 @@
     .description {
       color: #666;
       margin: 0 0 18px;
+      line-height: 1.6;
     }
 
     .links {
@@ -91,6 +100,10 @@
       padding: 20px 0;
     }
 
+    .error a {
+      color: #0969da;
+    }
+
     footer {
       margin-top: 60px;
       color: #888;
@@ -100,29 +113,46 @@
     footer a {
       color: inherit;
     }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 45px 20px;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+    }
   </style>
+
 </head>
 
 <body>
 
   <main class="container">
 
-    <header>
-      <h1>Varsha Ramineni</h1>
-      <p class="subtitle">Projects and research</p>
-    </header>
+```
+<header>
+  <h1>Varsha Ramineni</h1>
+  <p class="subtitle">Projects and research</p>
+</header>
 
-    <section>
-      <div id="projects" class="projects">
-        <p class="loading">Loading projects...</p>
-      </div>
-    </section>
+<section>
+  <div id="projects" class="projects">
+    <p class="loading">Loading projects...</p>
+  </div>
+</section>
 
-    <footer>
-      <a href="https://github.com/varsharamineni" target="_blank">
-        GitHub
-      </a>
-    </footer>
+<footer>
+  <a
+    href="https://github.com/varsharamineni"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    GitHub
+  </a>
+</footer>
+```
 
   </main>
 
@@ -143,74 +173,82 @@
 
         const repos = await response.json();
 
-        // Only show public repositories.
-        // Forks are excluded so your portfolio focuses on your own projects.
-        const projects = repos.filter(repo => !repo.fork);
+        // Only show non-fork repositories with GitHub Pages enabled.
+        const projects = repos.filter(repo =>
+          !repo.fork && repo.has_pages === true
+        );
 
         if (projects.length === 0) {
-          container.innerHTML =
-            '<p class="empty">No projects found.</p>';
+          container.innerHTML = `
+            <p class="empty">
+              No GitHub Pages projects found.
+            </p>
+          `;
           return;
         }
 
-        container.innerHTML = projects.map(repo => {
+        container.innerHTML = projects
+          .map(repo => {
 
-          const description =
-            repo.description ||
-            "No description provided.";
+            const description =
+              repo.description || "No description provided.";
 
-          const projectPage =
-            `https://${username}.github.io/${repo.name}/`;
+            const projectPage =
+              `https://${username}.github.io/${repo.name}/`;
 
-          return `
-            <article class="project">
+            return `
+              <article class="project">
 
-              <h2>${escapeHtml(repo.name)}</h2>
+                <h2>${escapeHtml(repo.name)}</h2>
 
-              <p class="description">
-                ${escapeHtml(description)}
-              </p>
+                <p class="description">
+                  ${escapeHtml(description)}
+                </p>
 
-              <div class="links">
+                <div class="links">
 
-                <a
-                  href="${projectPage}"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Project page →
-                </a>
+                  <a
+                    href="${projectPage}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Project page →
+                  </a>
 
-                <a
-                  href="${repo.html_url}"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  GitHub →
-                </a>
+                  <a
+                    href="${repo.html_url}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    GitHub →
+                  </a>
 
-              </div>
+                </div>
 
-            </article>
-          `;
-        }).join("");
+              </article>
+            `;
+          })
+          .join("");
 
       } catch (error) {
+
+        console.error(error);
 
         container.innerHTML = `
           <p class="error">
             Unable to load projects right now.
-            <a href="https://github.com/${username}">
+            <a
+              href="https://github.com/${username}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               View them on GitHub →
             </a>
           </p>
         `;
-
-        console.error(error);
       }
     }
 
-    // Prevent repository descriptions from injecting HTML.
     function escapeHtml(text) {
       const div = document.createElement("div");
       div.textContent = text;
