@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Varsha Ramineni — Projects</title>
+  <title>Varsha Ramineni — Selected Projects</title>
 
   <style>
     * {
@@ -158,6 +158,7 @@
 
   <script>
     const username = "varsharamineni";
+    const portfolioRepo = "varsharamineni.github.io";
 
     async function loadProjects() {
       const container = document.getElementById("projects");
@@ -173,9 +174,16 @@
 
         const repos = await response.json();
 
-        // Only show non-fork repositories with GitHub Pages enabled.
+        /*
+         * Only show:
+         * 1. Non-fork repositories
+         * 2. Repositories with GitHub Pages enabled
+         * 3. Repositories other than this portfolio itself
+         */
         const projects = repos.filter(repo =>
-          !repo.fork && repo.has_pages === true
+          !repo.fork &&
+          repo.has_pages === true &&
+          repo.name !== portfolioRepo
         );
 
         if (projects.length === 0) {
