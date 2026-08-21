@@ -241,7 +241,7 @@ content="Selected projects and research by Varsha Ramineni."
 
     .section-header {
       display: grid;
-      grid-template-columns: var(--label-col) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr);
       column-gap: var(--gap);
 
       padding: 22px 0;
@@ -276,7 +276,7 @@ content="Selected projects and research by Varsha Ramineni."
 
     .project {
       display: grid;
-      grid-template-columns: var(--label-col) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr);
       column-gap: var(--gap);
 
       padding: 30px 0;
@@ -404,7 +404,7 @@ content="Selected projects and research by Varsha Ramineni."
 
     footer {
       display: grid;
-      grid-template-columns: var(--label-col) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr);
       column-gap: var(--gap);
 
       padding: 40px 0 60px;
@@ -492,18 +492,7 @@ content="Selected projects and research by Varsha Ramineni."
       }
 
       .project {
-        grid-template-columns: 40px minmax(0, 1fr);
-        column-gap: 16px;
-      }
-
-      .section-header {
-        grid-template-columns: 40px minmax(0, 1fr);
-        column-gap: 16px;
-      }
-
-      footer {
-        grid-template-columns: 40px minmax(0, 1fr);
-        column-gap: 16px;
+        grid-template-columns: minmax(0, 1fr);
       }
     }
 
@@ -517,52 +506,14 @@ content="Selected projects and research by Varsha Ramineni."
 
 ```
 <!-- =======================================================
-     RUNNING HEADER
-======================================================== -->
-
-<div class="runhead">
-
-  <span class="runhead-left">
-    VARSHA RAMINENI
-  </span>
-
-  <span class="runhead-right">
-    PROJECTS / 2026
-  </span>
-
-</div>
-
-
-<!-- =======================================================
      MASTHEAD
 ======================================================== -->
 
 <header class="masthead">
-
-  <div class="eyebrow">
-
-    <span class="eyebrow-label">
-      Selected Work
-    </span>
-
-    <span class="eyebrow-text">
-      Research · Projects · Code
-    </span>
-
-  </div>
-
-
-  <h1>
+<h1>
     Varsha Ramineni
   </h1>
-
-
-  <p class="subtitle">
-    Selected projects and research.
-  </p>
-
-
-  <div class="github-wrap">
+<div class="github-wrap">
 
     <a
       class="github-button"
@@ -594,14 +545,7 @@ content="Selected projects and research by Varsha Ramineni."
 ======================================================== -->
 
 <section>
-
-  <div class="section-header">
-
-    <div class="section-label">
-      01
-    </div>
-
-    <div class="section-title">
+<div class="section-title">
       Selected Projects
     </div>
 
@@ -617,29 +561,6 @@ content="Selected projects and research by Varsha Ramineni."
   </div>
 
 </section>
-
-
-<!-- =======================================================
-     FOOTER
-======================================================== -->
-
-<footer>
-
-  <span>
-    INDEX
-  </span>
-
-  <span>
-    <a
-      href="https://github.com/varsharamineni"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      github.com/varsharamineni
-    </a>
-  </span>
-
-</footer>
 ```
 
   </main>
@@ -700,8 +621,9 @@ content="Selected projects and research by Varsha Ramineni."
         }
 
 
-        container.innerHTML = projects
-          .map((repo, index) => {
+        const projectCards = await Promise.all(
+          projects.map(async (repo) => {
+            const readmeTitle = await getReadmeTitle(repo);
 
             const description =
               repo.description ||
@@ -719,18 +641,11 @@ content="Selected projects and research by Varsha Ramineni."
             return `
 
               <article class="project">
-
-
-                <div class="project-index">
-                  ${String(index + 1).padStart(2, "0")}
-                </div>
-
-
-                <div class="project-content">
+<div class="project-content">
 
 
                   <h2>
-                    ${escapeHtml(repo.name)}
+                    ${escapeHtml(readmeTitle || repo.name)}
                   </h2>
 
 
@@ -797,7 +712,9 @@ content="Selected projects and research by Varsha Ramineni."
             `;
 
           })
-          .join("");
+        );
+
+        container.innerHTML = projectCards.join("");
 
 
       } catch (error) {
@@ -825,6 +742,32 @@ content="Selected projects and research by Varsha Ramineni."
 
       }
 
+    }
+
+
+    async function getReadmeTitle(repo) {
+      try {
+        const response = await fetch(
+          `https://api.github.com/repos/${username}/${repo.name}/readme`,
+          {
+            headers: {
+              Accept: "application/vnd.github.raw+json"
+            }
+          }
+        );
+
+        if (!response.ok) return "";
+
+        const markdown = await response.text();
+
+        // Use the first Markdown H1 as the project title.
+        const match = markdown.match(/^#\\s+(.+)$/m);
+
+        return match ? match[1].trim().replace(/[*_`~]/g, "") : "";
+      } catch (error) {
+        console.warn(`Unable to read README for ${repo.name}.`, error);
+        return "";
+      }
     }
 
 
